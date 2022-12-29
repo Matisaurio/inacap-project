@@ -28,6 +28,8 @@ if args.quantity:
         error = True
 else:
     cantidad = None
+if args.path[-1] !='/':
+    args.path += '/'
 
 if args.time and args.path and not(error):
     with Vimba.get_instance() as vimba:
@@ -41,5 +43,6 @@ if args.time and args.path and not(error):
                 counter += 1
                 frame_array = frame.as_opencv_image()
                 image = Image.fromarray(frame_array)
-                image.save(str(args.path)+filename)
-                time.sleep(int(args.time))
+                image.save(str(args.path)+filename+'.png')
+                print('image '+str(args.path)+filename+'.png'+' saved')
+                time.sleep(int(args.sleep))
