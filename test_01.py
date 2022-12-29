@@ -32,7 +32,7 @@ else:
 if args.time and args.path and not(error):
     with Vimba.get_instance() as vimba:
         with vimba.get_all_cameras()[0] as camera:
-            with camera.get_frame_generator(limit=cantidad, timeout_ms=int(args.timeout)) as frames:
+            with camera.get_frame_generator(limit=cantidad, timeout_ms=int(args.time)) as frames:
                 for frame in frames:
                     if not args.name:
                         filename = 'image_'+str(counter)+"_"+timestamp()
