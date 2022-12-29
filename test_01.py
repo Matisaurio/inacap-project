@@ -8,11 +8,11 @@ from vimba import Vimba# from vimba import Vimba
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", "--time", help="Tiempo en milisegundos tras cada captura de frame")
+parser.add_argument("-t", "--time", help="Tiempo en milisegundos tras cada captura de frame", defoult=200)
 parser.add_argument("-s", "--sleep", help="Tiempo en segundos de descanso tras cada captura de frame", default=0)
-parser.add_argument("-q", "--quantity", help="Cantidad de fotos a tomar")
-parser.add_argument("-p", "--path", help="ruta donde se guardarán las fotografías")
-parser.add_argument("-n", "--name", help="Nombre de las fotografías (<name>_number_hh:mm:ss_dd-mm-yy)")
+parser.add_argument("-q", "--quantity", help="Cantidad de fotos a tomar", defoult=10)
+parser.add_argument("-p", "--path", help="ruta donde se guardarán las fotografías (Ruta completa!!)")
+parser.add_argument("-n", "--name", help="Nombre de las fotografías (<name>_number_hh:mm:ss_dd-mm-yy)", defoult='image')
 
 args = parser.parse_args()
 counter = 1
@@ -37,13 +37,10 @@ if args.time and args.path and not(error):
             frames = camera.get_frame_generator(limit=cantidad, timeout_ms=int(args.time))
             for frame in frames:
                 print('capturing...')
-                if not args.name:
-                    filename = 'image_'+str(counter)+"_"+timestamp()
-                else:
-                    filename = str(args.name)+"_"+str(counter)+"_"+timestamp()
+                filename = str(args.name)+"_"+str(counter)+"_"+timestamp()
                 counter += 1
                 frame_array = frame.as_opencv_image()
                 image = Image.fromarray(frame_array)
                 image.save(str(args.path)+filename+'.png')
                 print('image '+str(args.path)+filename+'.png'+' saved \n')
-                time.sleep(int(args.sleep))
+                time.sleep(float(args.sleep))
