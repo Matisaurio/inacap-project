@@ -36,6 +36,7 @@ if args.time and args.path and not(error):
         with vimba.get_all_cameras()[0] as camera:
             frames = camera.get_frame_generator(limit=cantidad, timeout_ms=int(args.time))
             for frame in frames:
+                print('capturing...')
                 if not args.name:
                     filename = 'image_'+str(counter)+"_"+timestamp()
                 else:
@@ -44,5 +45,5 @@ if args.time and args.path and not(error):
                 frame_array = frame.as_opencv_image()
                 image = Image.fromarray(frame_array)
                 image.save(str(args.path)+filename+'.png')
-                print('image '+str(args.path)+filename+'.png'+' saved')
+                print('image '+str(args.path)+filename+'.png'+' saved \n')
                 time.sleep(int(args.sleep))
