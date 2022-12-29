@@ -1,31 +1,32 @@
 import threading
+import time
 from queue import SimpleQueue
 import tkinter as tk
 from PIL import Image, ImageTk
 from vimba import Vimba
 
-
-with Vimba.get_instance() as vimba:
-    with vimba.get_all_cameras()[0] as cam:
-        camera = cam
-
-def camera_streaming(queue):
+def camera_streaming():
     global is_streaming
     global camera
     is_streaming = True
     print("streaming started")
-    while is_streaming:
-        frame = camera.get_frame(timeout_ms=10)
-        im = Image.fromarray(frame.as_opencv_image())
-        image = ImageTk.PhotoImage(im)
-        lblVideo.config(image=image)
-        lblVideo.image = image
-    print("streaming stopped")
+    with Vimba.get_instance() as vimba:
+        with vimba.get_all_cameras()[0] as cam:
+            c = 1
+            for frame in cam.get_frame_generator(limit=10):
+                im = Image.fromarray(frame.as_opencv_image()).resize((500, 400), Image.ANTIALIAS)
+                im.save("ImagePy({}).png".format(c))
+                c += 1
+                image = ImageTk.PhotoImage(im)
+                lblVideo.config(image=image)
+                lblVideo.image = image
+                time.sleep(0.05)
+            print("streaming stopped")
 
 def start_streaming():
     start_btn["state"] = "disabled" # disable start button to avoid running the threaded task more than once
     stop_btn["state"] = "normal"    # enable stop button to allow user to stop the threaded task
-    threading.Thread(target=camera_streaming, args=(queue,), daemon=True).start()
+    threading.Thread(target=camera_streaming).start()
 
 def stop_streaming():
     global is_streaming, after_id
@@ -51,5 +52,6 @@ start_btn.grid(row=1, column=0)
 
 stop_btn = tk.Button(root, text="Stop", width=10, command=stop_streaming, state="disabled")
 stop_btn.grid(row=1, column=1)
+
 
 root.mainloop()
