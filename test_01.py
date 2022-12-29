@@ -1,4 +1,5 @@
 import threading
+import time
 from datetime import datetime
 from queue import SimpleQueue
 from PIL import Image, ImageTk
@@ -8,7 +9,7 @@ from vimba import Vimba# from vimba import Vimba
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--time", help="Tiempo en milisegundos tras cada captura de frame")
-parser.add_argument("-s", "--sleep", help="Tiempo en milisegundos tras cada captura de frame", default=0)
+parser.add_argument("-s", "--sleep", help="Tiempo en segundos de descanso tras cada captura de frame", default=0)
 parser.add_argument("-q", "--quantity", help="Cantidad de fotos a tomar")
 parser.add_argument("-p", "--path", help="ruta donde se guardarán las fotografías")
 parser.add_argument("-n", "--name", help="Nombre de las fotografías (<name>_number_hh:mm:ss_dd-mm-yy)")
@@ -41,4 +42,4 @@ if args.time and args.path and not(error):
                     frame_array = frame.as_opencv_image()
                     image = Image.fromarray(frame_array)
                     image.save(str(args.path)+filename)
-                    
+                    time.sleep(int(args.time))
